@@ -3,15 +3,31 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    
+    <!-- SEO Meta Tags -->
     <title>WhaFlow - Sistema de Disparo Automático para WhatsApp | Aumente suas Vendas</title>
     <meta name="description" content="Automatize seus disparos de mensagens no WhatsApp. Envie centenas de mensagens personalizadas de forma segura. Teste grátis por 7 dias. +10.000 empresas confiam em nós.">
     <meta name="keywords" content="disparo whatsapp, automação whatsapp, mensagens em massa, whatsapp business, marketing whatsapp">
+    <meta name="author" content="WhaFlow">
+    <meta name="robots" content="index, follow">
     
-    <!-- Open Graph -->
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://whaflow.com/">
     <meta property="og:title" content="WhaFlow - Automação de Disparos no WhatsApp">
     <meta property="og:description" content="Envie centenas de mensagens personalizadas pelo WhatsApp de forma simples, segura e automatizada. Teste grátis por 7 dias.">
+    <meta property="og:image" content="/favicon.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://whaflow.com/">
+    <meta property="twitter:title" content="WhaFlow - Automação de Disparos no WhatsApp">
+    <meta property="twitter:description" content="Envie centenas de mensagens personalizadas pelo WhatsApp de forma simples, segura e automatizada.">
+    <meta property="twitter:image" content="/favicon.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#25D366">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +55,58 @@
             color: var(--text-white);
             overflow-x: hidden;
             line-height: 1.6;
+            position: relative;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s ease;
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.5);
+        }
+
+        .pixel {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            animation: pixelFade 0.5s ease-out;
+        }
+
+        .burst {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: burstOut 0.5s ease-out forwards;
+        }
+
+        @keyframes pixelFade {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        @keyframes burstOut {
+            0% { 
+                opacity: 1; 
+                transform: translate(0, 0) scale(1); 
+            }
+            100% { 
+                opacity: 0; 
+                transform: translate(var(--x), var(--y)) scale(0); 
+            }
         }
 
         /* Video Background */
@@ -423,6 +491,8 @@
     </style>
 </head>
 <body>
+    <div class="cursor"></div>
+
     <!-- Video Background -->
     <div class="video-bg">
         <video autoplay muted loop playsinline>
@@ -648,6 +718,38 @@
     </a>
 
     <script>
+        // Custom Cursor
+        const cursor = document.querySelector(".cursor");
+
+        document.addEventListener("mousemove", e => {
+            cursor.style.left = e.clientX + "px";
+            cursor.style.top = e.clientY + "px";
+
+            const pixel = document.createElement("div");
+            pixel.className = "pixel";
+            pixel.style.left = e.clientX + "px";
+            pixel.style.top = e.clientY + "px";
+            document.body.appendChild(pixel);
+            setTimeout(() => pixel.remove(), 500);
+        });
+
+        document.addEventListener("click", e => {
+            for (let i = 0; i < 10; i++) {
+                const burst = document.createElement("div");
+                burst.className = "burst";
+                burst.style.left = e.clientX + "px";
+                burst.style.top = e.clientY + "px";
+
+                const angle = Math.random() * 2 * Math.PI;
+                const distance = 40 * Math.random();
+                burst.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
+                burst.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
+
+                document.body.appendChild(burst);
+                setTimeout(() => burst.remove(), 500);
+            }
+        });
+
         // FAQ Toggle
         document.querySelectorAll('.faq-item').forEach(item => {
             item.querySelector('.faq-question').addEventListener('click', () => {
